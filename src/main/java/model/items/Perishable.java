@@ -13,7 +13,7 @@ public class Perishable extends Item{
      * @param name
      * @param bestBy
      */
-    public Perishable(String name, Date bestBy) {
+    public Perishable(String name, Date bestBy) throws IllegalArgumentException {
         super(name);
         if (Date.from(Instant.now()).after(bestBy)){
             throw new IllegalArgumentException("bestBy cannot be before now");

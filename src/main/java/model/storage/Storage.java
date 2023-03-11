@@ -1,4 +1,6 @@
-package model;
+package model.storage;
+
+import model.items.Item;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package model;
+package model.storage;
 
 /**
  * Place Models a place, use it to address things, should be few.

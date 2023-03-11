@@ -1,4 +1,4 @@
-package model;
+package model.storage;
 
 /**
  * Room models a Room, even the outdoors part of a place, Outdoors is a room not a Place.

@@ -23,7 +23,7 @@ public class MainMenu {
             m.run(args);
         } catch (Exception e){
             e.printStackTrace();
-            System.out.println("Could not Launch Program.");
+            System.out.println("Something went wrong");
         }
     }
     public void run(String[] args){
@@ -376,19 +376,32 @@ public class MainMenu {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Input the name of the StorageSystem");
         String name = scanner.nextLine();
+        Place place = pickPlace(scanner);
+        Room room = pickRoom(scanner, place);
+        StorageSystem storageSystem = new StorageSystem(room,name);
+        return storageSystem;
+    }
+
+    private Room pickRoom(Scanner scanner, Place place) {
+        int index;
+        System.out.println("Choose the room for the StorageSystem");
+        for (int i = 0; i < listRooms.size(); i++){
+            if (listRooms.get(i).getPlace()== place){
+                System.out.println(i + " : " + listPlaces.get(i).getName());
+            }
+        }
+        index = scanner.nextInt();
+        Room room = listRooms.get(index);
+        return room;
+    }
+
+    private Place pickPlace(Scanner scanner) {
         System.out.println("Choose the place for the StorageSystem");
         for (int i = 0; i < listPlaces.size(); i++) {
             System.out.println(i + " : " + listPlaces.get(i).getName());
         }
         int index = scanner.nextInt();
-        System.out.println("Choose the room for the StorageSystem");
-        for (int i = 0; i < listRooms.size(); i++){
-            if (listRooms.get(i).getPlace()==listPlaces.get(index)){
-                System.out.println(i + " : " + listPlaces.get(i).getName());
-            }
-        }
-        index = scanner.nextInt();
-        StorageSystem storageSystem = new StorageSystem(listRooms.get(index),name);
-        return storageSystem;
+        Place place = listPlaces.get(index);
+        return place;
     }
 }

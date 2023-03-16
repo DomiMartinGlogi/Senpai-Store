@@ -155,7 +155,11 @@ public class MainMenu {
             }
             // TODO Basic Management tools
             case ("4") -> {
-                break;
+                managementMenu();
+                for (int i = 0; i < 50; i++) {
+                    System.out.println();
+                }
+                menu();
             }
             // TODO Search function
             case ("5") -> {
@@ -163,6 +167,7 @@ public class MainMenu {
             }
             // Exits the program
             case ("6") -> {
+                save();
                 break;
             }
             // Enters the debug menu, option is not given in menu on purpose + screen clear
@@ -297,5 +302,93 @@ public class MainMenu {
                 scanner.nextLine();
             }
         }
+    }
+
+    /**
+     * Represents the Management Menu
+     */
+    public void managementMenu(){
+        //Screen clear
+        for (int i = 0; i < 50; i++) {
+            System.out.println();
+        }
+
+        //Here be actual code
+        Scanner scanner = new Scanner(System.in);
+        System.out.println(
+                "MM    MM                                                                   tt    \n" +
+                "MMM  MMM   aa aa nn nnn    aa aa  gggggg   eee  mm mm mmmm    eee  nn nnn  tt    \n" +
+                "MM MM MM  aa aaa nnn  nn  aa aaa gg   gg ee   e mmm  mm  mm ee   e nnn  nn tttt  \n" +
+                "MM    MM aa  aaa nn   nn aa  aaa ggggggg eeeee  mmm  mm  mm eeeee  nn   nn tt    \n" +
+                "MM    MM  aaa aa nn   nn  aaa aa      gg  eeeee mmm  mm  mm  eeeee nn   nn  tttt \n" +
+                "                                  ggggg                                          \n");
+
+        System.out.println(
+                "1 : Create a Place         \n" +
+                "2 : Create a Room          \n" +
+                "3 : Create a Storagesystem \n" +
+                "4 : Create a Container     \n" +
+                "5 : Create an Object       \n");
+
+        String input = scanner.nextLine();
+        switch (input) {
+            case("1") -> {
+                Place place = placeCreator();
+                listPlaces.add(place);
+            }
+            case("2") -> {
+                Room room = roomCreator();
+                listRooms.add(room);
+            }
+            case ("3") -> {
+                StorageSystem storageSystem = storageSystemCreator();
+                listStorageSystems.add(storageSystem);
+            }
+
+            default -> {
+                System.out.println("Returning to menu");
+            }
+        }
+    }
+
+    private Place placeCreator(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Input the name of the place");
+        String name = scanner.nextLine();
+        Place place = new Place(name);
+        return place;
+    }
+
+    private Room roomCreator(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Input the name of the room");
+        String name = scanner.nextLine();
+        System.out.println("Choose the place for the room");
+        for (int i = 0; i < listPlaces.size(); i++) {
+            System.out.println(i + " : " + listPlaces.get(i).getName());
+        }
+        int index = scanner.nextInt();
+        Room room = new Room(listPlaces.get(index),name);
+        return room;
+    }
+
+    private StorageSystem storageSystemCreator(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Input the name of the StorageSystem");
+        String name = scanner.nextLine();
+        System.out.println("Choose the place for the StorageSystem");
+        for (int i = 0; i < listPlaces.size(); i++) {
+            System.out.println(i + " : " + listPlaces.get(i).getName());
+        }
+        int index = scanner.nextInt();
+        System.out.println("Choose the room for the StorageSystem");
+        for (int i = 0; i < listRooms.size(); i++){
+            if (listRooms.get(i).getPlace()==listPlaces.get(index)){
+                System.out.println(i + " : " + listPlaces.get(i).getName());
+            }
+        }
+        index = scanner.nextInt();
+        StorageSystem storageSystem = new StorageSystem(listRooms.get(index),name);
+        return storageSystem;
     }
 }

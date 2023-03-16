@@ -204,6 +204,7 @@ public class MainMenu {
                 }
                 System.out.println("Test Data Generated");
             }
+
         }
     }
 }

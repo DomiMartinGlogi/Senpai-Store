@@ -2,6 +2,7 @@ package model.storage;
 
 import model.items.Item;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  * Models the lowest level of Storage, ie a box or a level of a shelf
  * @author Dominik Martin Glogowski
  */
-public class Storage {
+public class Storage implements Serializable {
     private List<Item> contents;
     private String name;
     int capacity;

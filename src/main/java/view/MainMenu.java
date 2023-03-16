@@ -22,6 +22,7 @@ public class MainMenu {
             MainMenu m = new MainMenu();
             m.run(args);
         } catch (Exception e){
+            e.printStackTrace();
             System.out.println("Could not Launch Program.");
         }
     }
@@ -36,17 +37,25 @@ public class MainMenu {
      */
     public boolean load(){
         try {
-            FileInputStream fis = new FileInputStream("places.txt");
+            FileInputStream fis = new FileInputStream("storagesystems.txt");
             ObjectInputStream ois = new ObjectInputStream(fis);
-            listPlaces = (ArrayList<Place>) ois.readObject();
-
-            fis = new FileInputStream("rooms.txt");
-            ois = new ObjectInputStream(fis);
-            listRooms = (ArrayList<Room>) ois.readObject();
-
-            fis = new FileInputStream("storagesystems.txt");
-            ois = new ObjectInputStream(fis);
             listStorageSystems = (ArrayList<StorageSystem>) ois.readObject();
+
+            //Create the empty lists
+            listRooms = new ArrayList<>();
+            listPlaces = new ArrayList<>();
+
+            for (StorageSystem s:listStorageSystems){
+                Room r = s.getRoom();
+                Place p = r.getPlace();
+
+                if (!listRooms.contains(r)) {
+                    listRooms.add(r);
+                }
+                if (!listPlaces.contains(p)) {
+                    listPlaces.add(p);
+                }
+            }
 
             return true;
         } catch (FileNotFoundException e) {
@@ -65,16 +74,8 @@ public class MainMenu {
      */
     public boolean save(){
         try {
-            FileOutputStream fos = new FileOutputStream("places.txt");
+            FileOutputStream fos = new FileOutputStream("storagesystems.txt");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(listPlaces);
-
-            fos = new FileOutputStream("rooms.txt");
-            oos = new ObjectOutputStream(fos);
-            oos.writeObject(listRooms);
-
-            fos = new FileOutputStream("storagesystems.txt");
-            oos = new ObjectOutputStream(fos);
             oos.writeObject(listStorageSystems);
 
             return true;

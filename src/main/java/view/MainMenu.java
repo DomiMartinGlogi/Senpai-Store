@@ -5,6 +5,7 @@ import model.storage.Room;
 import model.storage.StorageSystem;
 
 import java.io.*;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 
 public class MainMenu {
@@ -47,6 +48,29 @@ public class MainMenu {
         return false;
     }
 
+    public boolean save(){
+        try {
+            FileOutputStream fos = new FileOutputStream("places.txt");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(listPlaces);
+
+            fos = new FileOutputStream("rooms.txt");
+            oos = new ObjectOutputStream(fos);
+            oos.writeObject(listRooms);
+
+            fos = new FileOutputStream("storagesystems.txt");
+            oos = new ObjectOutputStream(fos);
+            oos.writeObject(listStorageSystems);
+
+            return true;
+        } catch (FileNotFoundException e) {
+            System.out.println("A FileNotFoundException occurred during the writing of files");
+        } catch (IOException e) {
+            System.out.println("An IOException occurred during the writing of files.");
+        }
+        return false;
+    }
+
     private void launch(){
         boolean loadResult = load();
         if (!loadResult){
@@ -66,6 +90,7 @@ public class MainMenu {
                         "                       pp                                                     "
         );
         launch();
+        save();
     }
 
     public void run(String[] args){

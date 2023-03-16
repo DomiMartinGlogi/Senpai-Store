@@ -80,18 +80,17 @@ public class MainMenu {
             listRooms = new ArrayList<>();
             listStorageSystems = new ArrayList<>();
         }
-    }
-
-    private void menu(){
         System.out.println(
-                        "SSSSS                                 iii  SSSSS  tt                         \n" +
+                "SSSSS                                 iii  SSSSS  tt                         \n" +
                         "SS        eee  nn nnn  pp pp     aa aa     SS      tt     oooo  rr rr    eee  \n" +
                         " SSSSS  ee   e nnn  nn ppp  pp  aa aaa iii  SSSSS  tttt  oo  oo rrr  r ee   e \n" +
                         "     SS eeeee  nn   nn pppppp  aa  aaa iii      SS tt    oo  oo rr     eeeee  \n" +
                         " SSSSS   eeeee nn   nn pp       aaa aa iii  SSSSS   tttt  oooo  rr      eeeee \n" +
                         "                       pp                                                     "
         );
-        launch();
+    }
+
+    private void menu(){
         System.out.println(
                 "\nPlease input your selection: \n" +
                 "\n1 : List all contents" +
@@ -114,10 +113,20 @@ public class MainMenu {
                 menu();
             }
             case ("2") -> {
-                break;
+                listPlaces();
+                scanner.nextLine();
+                for (int i = 0; i < 50; i++) {
+                    System.out.println();
+                }
+                menu();
             }
             case ("3") -> {
-                break;
+                listRooms();
+                scanner.nextLine();
+                for (int i = 0; i < 50; i++) {
+                    System.out.println();
+                }
+                menu();
             }
             case ("4") -> {
                 break;
@@ -144,6 +153,7 @@ public class MainMenu {
     }
 
     public void run(String[] args){
+        launch();
         menu();
     }
 
@@ -174,6 +184,23 @@ public class MainMenu {
         }
     }
 
+    public void listPlaces(){
+        for (Place p:listPlaces){
+            System.out.println(p.getName());
+        }
+    }
+
+    public void listRooms(){
+        for(Place p:listPlaces){
+            System.out.println(p.getName() + ":");
+            for (Room r:listRooms){
+                if (r.getPlace() == p){
+                    System.out.println("    " + r.getName());
+                }
+            }
+        }
+    }
+
     private void debugMenu(){
         for (int i = 0; i < 50; i++) {
             System.out.println();
@@ -189,6 +216,8 @@ public class MainMenu {
         System.out.println("\n \n");
         Scanner scanner = new Scanner(System.in);
         System.out.println("1 : Generate Test Data");
+        System.out.println("2 : Delete all Data");
+        System.out.println("3 : Show all Data");
 
         String input = scanner.nextLine();
         switch (input) {
@@ -204,7 +233,30 @@ public class MainMenu {
                 }
                 System.out.println("Test Data Generated");
             }
-
+            case("2") -> {
+                listPlaces = new ArrayList<>();
+                listRooms = new ArrayList<>();
+                listStorageSystems = new ArrayList<>();
+            }
+            case("3") -> {
+                System.out.println("Places: ");
+                listPlaces();
+                System.out.println("Rooms: ");
+                for(Room r:listRooms){
+                    System.out.println(r.getName() + " " + r.getPlace().getName());
+                }
+                System.out.println("StorageSystems and their contents: ");
+                for (StorageSystem s:listStorageSystems){
+                    System.out.println(s.getName() + " " + s.getRoom().getName() + " " + s.getRoom().getPlace().getName());
+                    for (Storage c:s.getContainers()){
+                        System.out.println(c.getName());
+                        for (Item i:c.getContents()){
+                            System.out.println(i.getName() + " " + i.checkOutStatus());
+                        }
+                    }
+                }
+                scanner.nextLine();
+            }
         }
     }
 }

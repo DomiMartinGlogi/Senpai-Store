@@ -7,7 +7,6 @@ import model.storage.Storage;
 import model.storage.StorageSystem;
 
 import java.io.*;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -129,6 +128,13 @@ public class MainMenu {
             case ("6") -> {
                 break;
             }
+            case ("debug") -> {
+                debugMenu();
+                for (int i = 0; i < 50; i++) {
+                    System.out.println();
+                }
+                menu();
+            }
             default -> {
                 System.out.println("Invalid input, restarting");
                 menu();
@@ -164,6 +170,39 @@ public class MainMenu {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    public void debugMenu(){
+        for (int i = 0; i < 50; i++) {
+            System.out.println();
+        }
+        System.out.println(
+                "DDDDD          bb                      MM    MM                        \n" +
+                "DD  DD    eee  bb      uu   uu  gggggg MMM  MMM   eee  nn nnn  uu   uu \n" +
+                "DD   DD ee   e bbbbbb  uu   uu gg   gg MM MM MM ee   e nnn  nn uu   uu \n" +
+                "DD   DD eeeee  bb   bb uu   uu ggggggg MM    MM eeeee  nn   nn uu   uu \n" +
+                "DDDDDD   eeeee bbbbbb   uuuu u      gg MM    MM  eeeee nn   nn  uuuu u \n" +
+                "                                ggggg                                  "
+        );
+        System.out.println("\n \n");
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("1 : Generate Test Data");
+
+        String input = scanner.nextLine();
+        switch (input) {
+            case("1") -> {
+                for (int i = 0; i < 10; i++) {
+                    listPlaces.add(new Place("p" + i));
+                }
+                for (int i = 0; i < 10; i++) {
+                    listRooms.add(new Room(listPlaces.get(i), "r" + i));
+                }
+                for (int i = 0; i < 10; i++) {
+                    listStorageSystems.add(new StorageSystem(listRooms.get(i), "s" + i));
+                }
+                System.out.println("Test Data Generated");
             }
         }
     }

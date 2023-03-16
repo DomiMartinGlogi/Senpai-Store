@@ -15,6 +15,7 @@ public class MainMenu {
     private ArrayList<Room> listRooms;
     private ArrayList<StorageSystem> listStorageSystems;
 
+    //This is the launch control, this stuff is why I need a therapist
     public static void main(String[] args){
         //This is so dumb, why can't I just run it the way *I* want to, fuck Java seriously.
         try {
@@ -24,7 +25,15 @@ public class MainMenu {
             System.out.println("Could not Launch Program.");
         }
     }
+    public void run(String[] args){
+        launch();
+        menu();
+    }
 
+    /**
+     * Loads data
+     * @return true if successful, false if not
+     */
     public boolean load(){
         try {
             FileInputStream fis = new FileInputStream("places.txt");
@@ -50,6 +59,10 @@ public class MainMenu {
         return false;
     }
 
+    /**
+     * Saves data
+     * @return true if successful, false if not
+     */
     public boolean save(){
         try {
             FileOutputStream fos = new FileOutputStream("places.txt");
@@ -73,6 +86,11 @@ public class MainMenu {
         return false;
     }
 
+    /**
+     * Launches the program
+     * Loads the data if unsuccessful initialises empty lists
+     * Also prints the welcoming ASCII art
+     */
     private void launch(){
         boolean loadResult = load();
         if (!loadResult){
@@ -90,6 +108,9 @@ public class MainMenu {
         );
     }
 
+    /**
+     * This is the menu, really, that is it.
+     */
     private void menu(){
         System.out.println(
                 "\nPlease input your selection: \n" +
@@ -103,6 +124,7 @@ public class MainMenu {
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
         switch (input){
+            // Method call to listAllContents() + screen clear
             case ("1") -> {
                 listAllContents();
                 scanner.nextLine();
@@ -112,6 +134,7 @@ public class MainMenu {
                 }
                 menu();
             }
+            // Method call to listPlaces() + screen clear
             case ("2") -> {
                 listPlaces();
                 scanner.nextLine();
@@ -120,6 +143,7 @@ public class MainMenu {
                 }
                 menu();
             }
+            // Method call to listRooms() + screen clear
             case ("3") -> {
                 listRooms();
                 scanner.nextLine();
@@ -128,15 +152,19 @@ public class MainMenu {
                 }
                 menu();
             }
+            // TODO Basic Management tools
             case ("4") -> {
                 break;
             }
+            // TODO Search function
             case ("5") -> {
                 break;
             }
+            // Exits the program
             case ("6") -> {
                 break;
             }
+            // Enters the debug menu, option is not given in menu on purpose + screen clear
             case ("debug") -> {
                 debugMenu();
                 for (int i = 0; i < 50; i++) {
@@ -150,11 +178,6 @@ public class MainMenu {
             }
         }
         save();
-    }
-
-    public void run(String[] args){
-        launch();
-        menu();
     }
 
     /**
@@ -184,12 +207,18 @@ public class MainMenu {
         }
     }
 
+    /**
+     * Lists all the places
+     */
     public void listPlaces(){
         for (Place p:listPlaces){
             System.out.println(p.getName());
         }
     }
 
+    /**
+     * Lists all the Rooms sorted by places
+     */
     public void listRooms(){
         for(Place p:listPlaces){
             System.out.println(p.getName() + ":");
@@ -201,6 +230,12 @@ public class MainMenu {
         }
     }
 
+    /* No one but me should ever call this method so I shall leave it here and it might actually be fine
+       Honestly it could be a lot worse
+       Like a lot a lot
+       Mind you if you have to fix this:
+
+       Abandon all hope ye who enter here */
     private void debugMenu(){
         for (int i = 0; i < 50; i++) {
             System.out.println();
@@ -221,6 +256,7 @@ public class MainMenu {
 
         String input = scanner.nextLine();
         switch (input) {
+            //Testdata
             case("1") -> {
                 for (int i = 0; i < 10; i++) {
                     listPlaces.add(new Place("p" + i));
@@ -233,11 +269,13 @@ public class MainMenu {
                 }
                 System.out.println("Test Data Generated");
             }
+            //Data removal
             case("2") -> {
                 listPlaces = new ArrayList<>();
                 listRooms = new ArrayList<>();
                 listStorageSystems = new ArrayList<>();
             }
+            //Read out
             case("3") -> {
                 System.out.println("Places: ");
                 listPlaces();

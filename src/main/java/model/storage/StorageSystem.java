@@ -26,4 +26,8 @@ public class StorageSystem implements Serializable {
     public Room getRoom() {
         return room;
     }
+
+    public List<Storage> getContainers() {
+        return containers;
+    }
 }

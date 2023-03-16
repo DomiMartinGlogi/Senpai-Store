@@ -1,5 +1,6 @@
 package model.items;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Date;
 
@@ -8,7 +9,7 @@ import java.util.Date;
  * If generic class is needed just extend it.
  * @author Dominik Martin Glogowski
  */
-public abstract class Item {
+public abstract class Item implements Serializable {
     private String name;
     private boolean checkedOut;
     private Date checkOutDate;

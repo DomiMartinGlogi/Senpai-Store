@@ -1,10 +1,12 @@
 package model.storage;
 
+import java.io.Serializable;
+
 /**
  * Room models a Room, even the outdoors part of a place, Outdoors is a room not a Place.
  * @author Dominik Martin Glogowski
  */
-public class Room {
+public class Room implements Serializable {
     private Place place;
     private String name;
 

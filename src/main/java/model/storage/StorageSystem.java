@@ -30,4 +30,8 @@ public class StorageSystem implements Serializable {
     public List<Storage> getContainers() {
         return containers;
     }
+
+    public void addContainer(Storage c){
+        containers.add(c);
+    }
 }

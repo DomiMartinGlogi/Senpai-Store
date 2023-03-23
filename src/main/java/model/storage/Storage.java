@@ -23,9 +23,10 @@ public class Storage implements Serializable {
      */
     public Storage(String name, int capacity){
         if (capacity == -1){
-            capacity = Integer.MAX_VALUE;
+            contents = new ArrayList<>();
+        } else {
+            contents = new ArrayList<>(capacity);
         }
-        contents = new ArrayList<>(capacity);
         this.name = name;
         this.capacity = capacity;
     }

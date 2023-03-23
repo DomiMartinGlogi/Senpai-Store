@@ -1,13 +1,19 @@
 package view;
 
+import model.items.Alcohol;
+import model.items.Book;
 import model.items.Item;
+import model.items.Perishable;
 import model.storage.Place;
 import model.storage.Room;
 import model.storage.Storage;
 import model.storage.StorageSystem;
 
 import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 public class MainMenu {
@@ -344,7 +350,17 @@ public class MainMenu {
                 StorageSystem storageSystem = storageSystemCreator();
                 listStorageSystems.add(storageSystem);
             }
-
+            case ("4") -> {
+                containerCreator();
+            }
+            case ("5") -> {
+                try {
+                    objectCreator();
+                } catch (Exception e) {
+                    System.out.println("Something bad happened, returning to menu");
+                    scanner.nextLine();
+                }
+            }
             default -> {
                 System.out.println("Returning to menu");
             }
@@ -382,6 +398,88 @@ public class MainMenu {
         return storageSystem;
     }
 
+    private void containerCreator(){
+        Scanner scanner = new Scanner(System.in);
+        Place place = pickPlace(scanner);
+        Room room = pickRoom(scanner,place);
+        StorageSystem st = pickStorageSystem(scanner,room);
+        System.out.println("Enter the name for the container:");
+        String contName = scanner.nextLine();
+        System.out.println("Enter the containers capacity (-1 for infinite)");
+        int cap = scanner.nextInt();
+        Storage storage = new Storage(contName,cap);
+        int index = listStorageSystems.indexOf(st);
+        listStorageSystems.get(index).addContainer(storage);
+    }
+
+    private void objectCreator() throws ParseException {
+        //Defining which objects to call
+        Scanner scanner = new Scanner(System.in);
+        Place place = pickPlace(scanner);
+        Room room = pickRoom(scanner,place);
+        StorageSystem storageSystem = pickStorageSystem(scanner,room);
+        Storage storage = pickStorage(scanner,storageSystem);
+
+        // Taking in user Input for the Type of object
+        System.out.println("Please select the Type of Object:");
+        System.out.println(
+                "1 : Alcohol    \n" +
+                "2 : Book       \n" +
+                "3 : Perishable   ");
+        int type = scanner.nextInt();
+
+        //Taking in the name of the object, predefining the item
+        System.out.println("Please enter the name of the Object:");
+        String name = scanner.nextLine();
+        Item item = null;
+
+        //Preparing the SimpleDateFormat
+        SimpleDateFormat format = new SimpleDateFormat("dd-mm-yyyy");
+
+        //Decision logic to create the right object
+        switch (type) {
+            // Alcohol:
+            case(1) -> {
+                System.out.println("Please enter the type:");
+                String subType = scanner.nextLine();
+
+                System.out.println("Please enter the Best By Date in form of \"dd-mm-yyyy\":");
+                String bestByDate = scanner.nextLine();
+                Date bestby = format.parse(bestByDate);
+
+                System.out.println("Please enter the abv, without the '%':");
+                float abv = scanner.nextFloat();
+                item = new Alcohol(name,bestby,abv,subType);
+            }
+
+            // Book:
+            case(2) -> {
+                System.out.println("Please enter the Author:");
+                String author = scanner.nextLine();
+
+                System.out.println("Please enter the Genre:");
+                String genre = scanner.nextLine();
+
+                item = new Book(name,author,genre);
+            }
+
+            // Generic Perishable:
+            case(3) -> {
+                System.out.println("Please enter the Best By Date in form of \"dd-mm-yyyy\":");
+                String bestByDate = scanner.nextLine();
+                Date bestby = format.parse(bestByDate);
+
+                item = new Perishable(name,bestby);
+            }
+        }
+
+        // Making sure it gets saved properly.
+        int storageSystemIndex = listStorageSystems.indexOf(storageSystem);
+        int storageIndex = storageSystem.getContainers().indexOf(storage);
+
+        listStorageSystems.get(storageSystemIndex).getContainers().get(storageIndex).addItem(item);
+    }
+
     private Room pickRoom(Scanner scanner, Place place) {
         int index;
         System.out.println("Choose the room for the StorageSystem");
@@ -404,4 +502,30 @@ public class MainMenu {
         Place place = listPlaces.get(index);
         return place;
     }
+
+    private StorageSystem pickStorageSystem(Scanner scanner, Room room) {
+        StorageSystem st;
+        System.out.println("Pick a StorageSystem");
+        for (StorageSystem s:listStorageSystems) {
+            if (s.getRoom() == room) {
+                System.out.println(listStorageSystems.indexOf(s) + " : " + s.getName());
+            }
+        }
+        int index = scanner.nextInt();
+        st = listStorageSystems.get(index);
+        return st;
+    }
+
+    private Storage pickStorage(Scanner scanner, StorageSystem storageSystem) {
+        Storage storage = null;
+        scanner = new Scanner(System.in);
+        System.out.println("Select the Container:");
+        for (Storage s:storageSystem.getContainers()){
+            System.out.println(storageSystem.getContainers().indexOf(s) + " : " + s.getName());
+        }
+        int index = scanner.nextInt();
+        storage = storageSystem.getContainers().get(index);
+        return storage;
+    }
+
 }

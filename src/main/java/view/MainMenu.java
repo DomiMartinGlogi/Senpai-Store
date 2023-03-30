@@ -370,7 +370,6 @@ public class MainMenu {
             case (6) -> {
                 deletionMenu();
                 save();
-                menu();
             }
             default -> {
                 System.out.println("Returning to menu");
@@ -505,7 +504,7 @@ public class MainMenu {
     }
 
     private Place pickPlace(Scanner scanner) {
-        System.out.println("Choose the place for the StorageSystem");
+        System.out.println("Choose a Place");
         for (int i = 0; i < listPlaces.size(); i++) {
             System.out.println(i + " : " + listPlaces.get(i).getName());
         }
@@ -723,16 +722,21 @@ public class MainMenu {
             case(1) -> {
                 Place p = pickPlace(scanner);
                 System.out.println("Are you sure you want to delete : " +p.getName() + " and all its contents?(y/n)");
-                boolean confirm = scanner.nextLine().contains("y");
+                scanner = new Scanner(System.in);
+                String confirmStr = scanner.nextLine();
+                boolean confirm = confirmStr.contains("y")||confirmStr.contains("Y");
                 if (confirm) {
                     placeDeleter(p);
                 }
+                scanner.nextLine();
             }
             case(2) -> {
                 Place p = pickPlace(scanner);
                 Room r = pickRoom(scanner, p);
                 System.out.println("Are you sure you want to delete : " + r.getName() + " in " + p.getName() + "and all it's contents?(y/n)");
-                boolean confirm = scanner.nextLine().contains("y");
+                scanner = new Scanner(System.in);
+                String confirmStr = scanner.nextLine();
+                boolean confirm = confirmStr.contains("y")||confirmStr.contains("Y");
                 if (confirm) {
                     roomDeleter(r);
                 }
@@ -742,7 +746,9 @@ public class MainMenu {
                 Room r = pickRoom(scanner, p);
                 StorageSystem st = pickStorageSystem(scanner, r);
                 System.out.println("Are you sure you want to delete : " + st.getName() + " in " + r.getName() + " in " + p.getName() + "and all it's contents?(y/n)");
-                boolean confirm = scanner.nextLine().contains("y");
+                scanner = new Scanner(System.in);
+                String confirmStr = scanner.nextLine();
+                boolean confirm = confirmStr.contains("y")||confirmStr.contains("Y");
                 if (confirm) {
                     storageSystemDeleter(st);
                 }
@@ -753,7 +759,9 @@ public class MainMenu {
                 StorageSystem st = pickStorageSystem(scanner, r);
                 Storage s = pickStorage(scanner, st);
                 System.out.println("Are you sure you want to delete : "+ s.getName() + " in " + st.getName() + " in " + r.getName() + " in " + p.getName() + "and all it's contents?(y/n)");
-                boolean confirm = scanner.nextLine().contains("y");
+                scanner = new Scanner(System.in);
+                String confirmStr = scanner.nextLine();
+                boolean confirm = confirmStr.contains("y")||confirmStr.contains("Y");
                 if (confirm) {
                     storageDeleter(st, s);
                 }
@@ -764,8 +772,10 @@ public class MainMenu {
                 StorageSystem st = pickStorageSystem(scanner, r);
                 Storage s = pickStorage(scanner, st);
                 Item i = pickItem(scanner, s);
+                scanner = new Scanner(System.in);
                 System.out.println("Are you sure you want to delete : "+ i.getName() + " in " + s.getName() + " in " + st.getName() + " in " + r.getName() + " in " + p.getName() + "and all it's contents?(y/n)");
-                boolean confirm = scanner.nextLine().contains("y");
+                String confirmStr = scanner.nextLine();
+                boolean confirm = confirmStr.contains("y")||confirmStr.contains("Y");
                 if (confirm) {
                     itemDeleter(st, s, i);
                 }
@@ -774,26 +784,29 @@ public class MainMenu {
     }
 
     private void placeDeleter(Place p){
-        listPlaces.remove(p);
-        for (Room r:listRooms) {
+        for (int i = 0; i < listRooms.size(); i++) {
+            Room r = listRooms.get(i);
             if (r.getPlace() == p) {
-                listRooms.remove(r);
-                for (StorageSystem st:listStorageSystems){
+                for (int j = 0; j < listStorageSystems.size(); j++) {
+                    StorageSystem st = listStorageSystems.get(j);
                     if (st.getRoom() == r) {
                         listStorageSystems.remove(st);
                     }
                 }
+                listRooms.remove(r);
             }
         }
+        listPlaces.remove(p);
     }
 
     private void roomDeleter(Room r){
-        listRooms.remove(r);
-        for (StorageSystem st:listStorageSystems){
-            if (st.getRoom()==r){
+        for (int i = 0; i < listStorageSystems.size(); i++) {
+            StorageSystem st = listStorageSystems.get(i);
+            if (st.getRoom() == r) {
                 listStorageSystems.remove(st);
             }
         }
+        listRooms.remove(r);
     }
 
     private void storageSystemDeleter(StorageSystem st){

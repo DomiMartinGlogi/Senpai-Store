@@ -17,7 +17,7 @@ public class Searcher {
     public ArrayList<Searchable> search(){
         ArrayList<Searchable> results= new ArrayList<>();
         for (Searchable i:searchArea){
-            if (i.getName().equals(searchTerm)){
+            if (i.getName().contains(searchTerm)){
                 results.add(i);
             }
         }

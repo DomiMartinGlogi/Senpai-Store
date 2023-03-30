@@ -335,7 +335,8 @@ public class MainMenu {
                 "3 : Create a Storagesystem \n" +
                 "4 : Create a Container     \n" +
                 "5 : Create an Object       \n" +
-                "6 : Remove something       \n");
+                "6 : Remove something       \n" +
+                "7 : Back                   \n");
 
         int input = scanner.nextInt();
         switch (input) {
@@ -366,8 +367,12 @@ public class MainMenu {
                 deletionMenu();
                 save();
             }
+            case (7) -> {
+                return;
+            }
             default -> {
                 System.out.println("Returning to menu");
+                return;
             }
         }
     }

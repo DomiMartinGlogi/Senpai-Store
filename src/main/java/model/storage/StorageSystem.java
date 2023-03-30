@@ -1,5 +1,7 @@
 package model.storage;
 
+import controller.Searchable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +10,7 @@ import java.util.List;
  * Storage System models a Larger group of Storages, like for example an entire Shelf or a group of Shelfs
  * @author Dominik Martin Glogowski
  */
-public class StorageSystem implements Serializable {
+public class StorageSystem implements Serializable, Searchable {
     private List<Storage> containers;
     private Room room;
     private String name;

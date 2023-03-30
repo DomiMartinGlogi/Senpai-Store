@@ -1,5 +1,6 @@
 package model.storage;
 
+import controller.Searchable;
 import model.items.Item;
 
 import java.io.Serializable;
@@ -10,7 +11,7 @@ import java.util.List;
  * Models the lowest level of Storage, ie a box or a level of a shelf
  * @author Dominik Martin Glogowski
  */
-public class Storage implements Serializable {
+public class Storage implements Serializable, Searchable {
     private List<Item> contents;
     private String name;
     int capacity;

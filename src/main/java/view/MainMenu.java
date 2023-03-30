@@ -1,5 +1,7 @@
 package view;
 
+import controller.Searchable;
+import controller.Searcher;
 import model.items.Alcohol;
 import model.items.Book;
 import model.items.Item;
@@ -10,6 +12,7 @@ import model.storage.Storage;
 import model.storage.StorageSystem;
 
 import java.io.*;
+import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -169,7 +172,8 @@ public class MainMenu {
             }
             // TODO Search function
             case ("5") -> {
-                break;
+                searchMenu();
+                menu();
             }
             // Exits the program
             case ("6") -> {
@@ -528,4 +532,102 @@ public class MainMenu {
         return storage;
     }
 
+    private void searchMenu(){
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Please put in the search term: ");
+        String searchTerm = scanner.nextLine();
+
+        System.out.println(
+                "1 : Place \n" +
+                "2 : Room \n"  +
+                "3 : StorageSystem \n" +
+                "4 : Storage \n" +
+                "5 : Item \n" +
+                "6 : Anything");
+
+        System.out.println("Please choose what you are looking for: ");
+        int selection = scanner.nextInt();
+        ArrayList<Searchable> searchables= new ArrayList<>();
+        ArrayList<Searchable> results;
+
+        switch (selection) {
+            case(1) -> {
+                for (Place p:listPlaces){
+                    searchables.add(p);
+                }
+            }
+            case(2) -> {
+                for (Room r:listRooms) {
+                    searchables.add(r);
+                }
+            }
+            case(3) -> {
+                for(StorageSystem st:listStorageSystems){
+                    searchables.add(st);
+                }
+            }
+            case(4) -> {
+                for (StorageSystem st:listStorageSystems){
+                    for (Storage s:st.getContainers()){
+                        searchables.add(s);
+                    }
+                }
+            }
+            case(5) -> {
+                for (StorageSystem st:listStorageSystems){
+                    for (Storage s:st.getContainers()){
+                        for(Item i:s.getContents()){
+                            searchables.add(i);
+                        }
+                    }
+                }
+            }
+            case (6) -> {
+                for (Place p:listPlaces){
+                    searchables.add(p);
+                }
+                for (Room r:listRooms){
+                    searchables.add(r);
+                }
+                for (StorageSystem st:listStorageSystems){
+                    searchables.add(st);
+                    for (Storage s:st.getContainers()){
+                        searchables.add(s);
+                        for (Item i:s.getContents()){
+                            searchables.add(i);
+                        }
+                    }
+                }
+            }
+        }
+
+        //No need to search with no search area
+       if (searchables.isEmpty()){
+           return;
+       }
+
+       Searcher searcher = new Searcher(searchTerm, searchables);
+       results = searcher.search();
+
+       ArrayList<Place> resultPlaces = new ArrayList<>();
+       ArrayList<Room> resultRooms = new ArrayList<>();
+       ArrayList<StorageSystem> resultStorageSystems = new ArrayList<>();
+       ArrayList<Storage> resultStorages = new ArrayList<>();
+       ArrayList<Item> resultItems = new ArrayList<>();
+
+       for (Searchable s:results){
+           if (s.getClass().equals(Place.class)) {
+               resultPlaces.add((Place) s);
+           } else if (s.getClass().equals(Room.class)) {
+               resultRooms.add((Room) s);
+           } else if (s.getClass().equals(StorageSystem.class)) {
+               resultStorageSystems.add((StorageSystem) s);
+           } else if (s.getClass().equals(Storage.class)) {
+               resultStorages.add((Storage) s);
+           } else {
+               resultItems.add((Item) s);
+           }
+       }
+    }
 }

@@ -15,6 +15,7 @@ import java.io.*;
 import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.chrono.IsoChronology;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -338,32 +339,38 @@ public class MainMenu {
                 "2 : Create a Room          \n" +
                 "3 : Create a Storagesystem \n" +
                 "4 : Create a Container     \n" +
-                "5 : Create an Object       \n");
+                "5 : Create an Object       \n" +
+                "6 : Remove something       \n");
 
-        String input = scanner.nextLine();
+        int input = scanner.nextInt();
         switch (input) {
-            case("1") -> {
+            case(1) -> {
                 Place place = placeCreator();
                 listPlaces.add(place);
             }
-            case("2") -> {
+            case(2) -> {
                 Room room = roomCreator();
                 listRooms.add(room);
             }
-            case ("3") -> {
+            case (3) -> {
                 StorageSystem storageSystem = storageSystemCreator();
                 listStorageSystems.add(storageSystem);
             }
-            case ("4") -> {
+            case (4) -> {
                 containerCreator();
             }
-            case ("5") -> {
+            case (5) -> {
                 try {
                     objectCreator();
                 } catch (Exception e) {
                     System.out.println("Something bad happened, returning to menu");
                     scanner.nextLine();
                 }
+            }
+            case (6) -> {
+                deletionMenu();
+                save();
+                menu();
             }
             default -> {
                 System.out.println("Returning to menu");
@@ -532,7 +539,23 @@ public class MainMenu {
         return storage;
     }
 
+    private Item pickItem(Scanner scanner, Storage storage) {
+        scanner = new Scanner(System.in);
+        ArrayList<Item> contents = (ArrayList<Item>) storage.getContents();
+        System.out.println("Contents of " + storage.getName() + " :");
+        for (int i = 0; i < contents.size(); i++) {
+            System.out.println(i + " : " + contents.get(i).getName());
+        }
+
+        int selection = scanner.nextInt();
+        return contents.get(selection);
+    }
+
     private void searchMenu(){
+        for (int i = 0; i < 50; i++) {
+            System.out.println();
+        }
+        //User Input
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Please put in the search term: ");
@@ -551,6 +574,7 @@ public class MainMenu {
         ArrayList<Searchable> searchables= new ArrayList<>();
         ArrayList<Searchable> results;
 
+        //Figuring out where to search
         switch (selection) {
             case(1) -> {
                 for (Place p:listPlaces){
@@ -604,30 +628,185 @@ public class MainMenu {
 
         //No need to search with no search area
        if (searchables.isEmpty()){
+           System.out.println("No searchable area, aborting search");
+           scanner.nextLine();
            return;
        }
 
+       //Actually searching
        Searcher searcher = new Searcher(searchTerm, searchables);
        results = searcher.search();
 
+       //Sorting the results
        ArrayList<Place> resultPlaces = new ArrayList<>();
        ArrayList<Room> resultRooms = new ArrayList<>();
        ArrayList<StorageSystem> resultStorageSystems = new ArrayList<>();
        ArrayList<Storage> resultStorages = new ArrayList<>();
        ArrayList<Item> resultItems = new ArrayList<>();
 
-       for (Searchable s:results){
-           if (s.getClass().equals(Place.class)) {
-               resultPlaces.add((Place) s);
-           } else if (s.getClass().equals(Room.class)) {
-               resultRooms.add((Room) s);
-           } else if (s.getClass().equals(StorageSystem.class)) {
-               resultStorageSystems.add((StorageSystem) s);
-           } else if (s.getClass().equals(Storage.class)) {
-               resultStorages.add((Storage) s);
-           } else {
-               resultItems.add((Item) s);
+       //But only if there are results
+       if (!results.isEmpty()){
+           for (Searchable s:results){
+               if (s.getClass().equals(Place.class)) {
+                   resultPlaces.add((Place) s);
+               } else if (s.getClass().equals(Room.class)) {
+                   resultRooms.add((Room) s);
+               } else if (s.getClass().equals(StorageSystem.class)) {
+                   resultStorageSystems.add((StorageSystem) s);
+               } else if (s.getClass().equals(Storage.class)) {
+                   resultStorages.add((Storage) s);
+               } else {
+                   resultItems.add((Item) s);
+               }
            }
+       } else {
+           System.out.println("No results for term : " + searchTerm);
+           return;
        }
+
+       //Listing the results in the worst way possible, I swear
+        if (!resultPlaces.isEmpty()){
+            System.out.println("Places that match \"" + searchTerm + "\" :");
+            for (Place p:resultPlaces) {
+                System.out.println(p.getName());
+            }
+            System.out.println();
+        }
+        if (!resultRooms.isEmpty()) {
+            System.out.println("Rooms that match \"" + searchTerm + "\" :");
+            for (Room r:resultRooms) {
+                System.out.println(r.getName());
+            }
+            System.out.println();
+        }
+        if (!resultStorageSystems.isEmpty()) {
+            System.out.println("StorageSystems that match \"" + searchTerm + "\" :");
+            for (StorageSystem st:resultStorageSystems) {
+                System.out.println(st.getName());
+            }
+            System.out.println();
+        }
+        if (!resultStorages.isEmpty()) {
+            System.out.println("Storages that match \"" + searchTerm + "\" :");
+            for (Storage s:resultStorages){
+                System.out.println(s.getName());
+            }
+            System.out.println();
+        }
+        if (!resultItems.isEmpty()){
+            System.out.println("Items that match \"" + searchTerm + "\" :");
+            for (Item i:resultItems) {
+                System.out.println(i.getName());
+            }
+            System.out.println();
+        }
+        scanner.nextLine();
+    }
+
+    private void deletionMenu(){
+        // Clear the Screen
+        for (int i = 0; i < 50; i++) {
+            System.out.println();
+        }
+
+        // User input
+        Scanner scanner = new Scanner(System.in);
+        System.out.println(
+                "1 : Place\n" +
+                "2 : Room \n" +
+                "3 : StorageSystem\n" +
+                "4 : Storage \n" +
+                "5 : Item");
+        int selection = scanner.nextInt();
+
+        switch (selection){
+            case(1) -> {
+                Place p = pickPlace(scanner);
+                System.out.println("Are you sure you want to delete : " +p.getName() + " and all its contents?(y/n)");
+                boolean confirm = scanner.nextLine().contains("y");
+                if (confirm) {
+                    placeDeleter(p);
+                }
+            }
+            case(2) -> {
+                Place p = pickPlace(scanner);
+                Room r = pickRoom(scanner, p);
+                System.out.println("Are you sure you want to delete : " + r.getName() + " in " + p.getName() + "and all it's contents?(y/n)");
+                boolean confirm = scanner.nextLine().contains("y");
+                if (confirm) {
+                    roomDeleter(r);
+                }
+            }
+            case(3) -> {
+                Place p = pickPlace(scanner);
+                Room r = pickRoom(scanner, p);
+                StorageSystem st = pickStorageSystem(scanner, r);
+                System.out.println("Are you sure you want to delete : " + st.getName() + " in " + r.getName() + " in " + p.getName() + "and all it's contents?(y/n)");
+                boolean confirm = scanner.nextLine().contains("y");
+                if (confirm) {
+                    storageSystemDeleter(st);
+                }
+            }
+            case(4) -> {
+                Place p = pickPlace(scanner);
+                Room r = pickRoom(scanner, p);
+                StorageSystem st = pickStorageSystem(scanner, r);
+                Storage s = pickStorage(scanner, st);
+                System.out.println("Are you sure you want to delete : "+ s.getName() + " in " + st.getName() + " in " + r.getName() + " in " + p.getName() + "and all it's contents?(y/n)");
+                boolean confirm = scanner.nextLine().contains("y");
+                if (confirm) {
+                    storageDeleter(st, s);
+                }
+            }
+            case(5) -> {
+                Place p = pickPlace(scanner);
+                Room r = pickRoom(scanner, p);
+                StorageSystem st = pickStorageSystem(scanner, r);
+                Storage s = pickStorage(scanner, st);
+                Item i = pickItem(scanner, s);
+                System.out.println("Are you sure you want to delete : "+ i.getName() + " in " + s.getName() + " in " + st.getName() + " in " + r.getName() + " in " + p.getName() + "and all it's contents?(y/n)");
+                boolean confirm = scanner.nextLine().contains("y");
+                if (confirm) {
+                    itemDeleter(st, s, i);
+                }
+            }
+        }
+    }
+
+    private void placeDeleter(Place p){
+        listPlaces.remove(p);
+        for (Room r:listRooms) {
+            if (r.getPlace() == p) {
+                listRooms.remove(r);
+                for (StorageSystem st:listStorageSystems){
+                    if (st.getRoom() == r) {
+                        listStorageSystems.remove(st);
+                    }
+                }
+            }
+        }
+    }
+
+    private void roomDeleter(Room r){
+        listRooms.remove(r);
+        for (StorageSystem st:listStorageSystems){
+            if (st.getRoom()==r){
+                listStorageSystems.remove(st);
+            }
+        }
+    }
+
+    private void storageSystemDeleter(StorageSystem st){
+        listStorageSystems.remove(st);
+    }
+
+    private void storageDeleter(StorageSystem st, Storage s){
+        st.getContainers().remove(s);
+    }
+
+    private void itemDeleter(StorageSystem st, Storage s, Item i){
+        int indexSt = listStorageSystems.indexOf(st);
+        int indexS = listStorageSystems.get(indexSt).getContainers().indexOf(s);
+        listStorageSystems.get(indexSt).getContainers().get(indexS).removeItem(i);
     }
 }

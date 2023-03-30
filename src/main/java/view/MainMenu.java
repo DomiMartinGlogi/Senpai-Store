@@ -275,15 +275,10 @@ public class MainMenu {
         switch (input) {
             //Testdata
             case("1") -> {
-                for (int i = 0; i < 10; i++) {
-                    listPlaces.add(new Place("p" + i));
-                }
-                for (int i = 0; i < 10; i++) {
-                    listRooms.add(new Room(listPlaces.get(i), "r" + i));
-                }
-                for (int i = 0; i < 10; i++) {
-                    listStorageSystems.add(new StorageSystem(listRooms.get(i), "s" + i));
-                }
+                listPlaces = demoDataGen.genPlaces(10);
+                listRooms = demoDataGen.genRooms(listPlaces);
+                listStorageSystems = demoDataGen.genStorageSystems(listRooms);
+
                 System.out.println("Test Data Generated");
             }
             //Data removal

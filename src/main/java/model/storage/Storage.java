@@ -32,6 +32,12 @@ public class Storage implements Serializable, Searchable {
         this.capacity = capacity;
     }
 
+    public Storage(String name){
+        this.name = name;
+        this.capacity = -1;
+        contents = new ArrayList<>();
+    }
+
     public String getName() {
         return name;
     }

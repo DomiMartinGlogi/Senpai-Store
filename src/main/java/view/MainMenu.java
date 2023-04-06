@@ -163,7 +163,7 @@ public class MainMenu {
                 }
                 menu();
             }
-            // TODO Basic Management tools
+            // ManagementMenu + Screen clear
             case ("4") -> {
                 managementMenu();
                 for (int i = 0; i < 50; i++) {
@@ -171,7 +171,7 @@ public class MainMenu {
                 }
                 menu();
             }
-            // TODO Search function
+            // Search Menu
             case ("5") -> {
                 searchMenu();
                 menu();
